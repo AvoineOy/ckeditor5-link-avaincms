@@ -67,14 +67,14 @@ export default class LinkUI extends Plugin {
       currValue = upcast(selected)
     }
 
-    const update = newValue => {
+    const updateCallback = newValue => {
       if (newValue.href) {
         editor.execute('link', newValue)
       } else {
         editor.execute('unlink')
       }
     }
-    window.openLinkModal(currValue, update)
+    editor.openLinkModal(currValue, updateCallback)
   }
 
   /**
