@@ -1,7 +1,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin'
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver'
 import Range from '@ckeditor/ckeditor5-engine/src/view/range'
-import {isLinkElement} from './utils'
+import {isLinkElement, upcast} from './utils'
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 
@@ -61,17 +61,17 @@ export default class LinkUI extends Plugin {
       return
     }
 
-    const currValue = {href: ''}
+    let currValue = {href: ''}
     const selected = this._getSelectedLinkElement()
     if (selected) {
-      currValue.href = selected.getAttribute('href')
+      currValue = upcast(selected)
     }
 
     const update = newValue => {
-      if (currValue.href) {
-        editor.execute('unlink')
-      } else {
+      if (newValue.href) {
         editor.execute('link', newValue)
+      } else {
+        editor.execute('unlink')
       }
     }
     window.openLinkModal(currValue, update)

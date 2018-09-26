@@ -58,7 +58,6 @@ export default class LinkCommand extends Command {
     const selection = model.document.selection
 
     model.change(writer => {
-      console.warn('richLink!', {writer, richLink, model, selection})
       // If selection is collapsed then update selected link or insert new one at the place of caret.
       if (selection.isCollapsed) {
         const position = selection.getFirstPosition()
@@ -67,12 +66,11 @@ export default class LinkCommand extends Command {
         if (selection.hasAttribute('richLink')) {
           // Then update `richLink` value.
           const linkRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'))
-          console.warn('link2!', {linkRange})
           writer.setAttribute('richLink', richLink, linkRange)
-          if (attrs.openInNewWindow) {
+          if (richLink.openInNewWindow) {
             writer.setAttribute('linkOpenInNewWindow', true, linkRange)
           } else {
-            writer.removeAttribute('linkOpenInNewWindow')
+            writer.removeAttribute('linkOpenInNewWindow', linkRange)
           }
 
           // Create new range wrapping changed link.

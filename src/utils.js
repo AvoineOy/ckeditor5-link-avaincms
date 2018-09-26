@@ -22,6 +22,13 @@ export function isLinkElement(node) {
   return node.is('attributeElement') && !!node.getCustomProperty(linkElementSymbol)
 }
 
+export function upcast(viewElement) {
+  return {
+    href: viewElement.getAttribute('href'),
+    openInNewWindow: !!viewElement.hasAttribute('target'),
+  }
+}
+
 /**
  * Creates link {@link module:engine/view/attributeelement~AttributeElement} with provided `href` attribute.
  *
@@ -30,7 +37,16 @@ export function isLinkElement(node) {
  */
 export function createLinkElement(richLink, writer) {
   // Priority 5 - https://github.com/ckeditor/ckeditor5-link/issues/121.
-  const linkElement = writer.createAttributeElement('a', {href: richLink ? richLink.href : null}, {priority: 5})
+
+  const attrs = {}
+  if (richLink && richLink.href) {
+    attrs.href = richLink.href
+    attrs.rel = 'noopener'
+    if (richLink.openInNewWindow) {
+      attrs.target = '_blank'
+    }
+  }
+  const linkElement = writer.createAttributeElement('a', attrs, {priority: 5})
   writer.setCustomProperty(linkElementSymbol, true, linkElement)
 
   return linkElement

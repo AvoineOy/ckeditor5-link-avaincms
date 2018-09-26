@@ -12,7 +12,7 @@ import {downcastAttributeToElement} from '@ckeditor/ckeditor5-engine/src/convers
 import {upcastElementToAttribute} from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters'
 import LinkCommand from './linkcommand'
 import UnlinkCommand from './unlinkcommand'
-import {createLinkElement, ensureSafeUrl} from './utils'
+import {createLinkElement, ensureSafeUrl, upcast} from './utils'
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute'
 import findLinkRange from './findlinkrange'
 import '../theme/link.css'
@@ -57,9 +57,7 @@ export default class LinkEditing extends Plugin {
         },
         model: {
           key: 'richLink',
-          value: viewElement => ({
-            href: viewElement.getAttribute('href'),
-          }),
+          value: upcast,
         },
       })
     )
