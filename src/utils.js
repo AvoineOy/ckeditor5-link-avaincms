@@ -77,3 +77,57 @@ function isSafeUrl(url) {
 
   return normalizedUrl.match(SAFE_URL)
 }
+
+export function showUI(editor) {
+  if (!editor.commands.get('link')) {
+    return
+  }
+
+  let currValue = {href: ''}
+  const selected = _getSelectedLinkElement(editor)
+  if (selected) {
+    currValue = upcast(selected)
+  }
+
+  const updateCallback = newValue => {
+    if (newValue.href) {
+      editor.execute('link', newValue)
+    } else {
+      editor.execute('unlink')
+    }
+  }
+  editor.openLinkModal(currValue, updateCallback)
+}
+
+function _getSelectedLinkElement(editor) {
+  function findLinkElementAncestor(position) {
+    return position.getAncestors().find(ancestor => isLinkElement(ancestor))
+  }
+
+  const selection = editor.editing.view.document.selection
+
+  if (selection.isCollapsed) {
+    return findLinkElementAncestor(selection.getFirstPosition())
+  } else {
+    // The range for fully selected link is usually anchored in adjacent text nodes.
+    // Trim it to get closer to the actual link element.
+    const range = selection.getFirstRange().getTrimmed()
+    const startLink = findLinkElementAncestor(range.start)
+    const endLink = findLinkElementAncestor(range.end)
+
+    if (!startLink || startLink != endLink) {
+      return null
+    }
+
+    // Check if the link element is fully selected.
+    if (
+      Range.createIn(startLink)
+        .getTrimmed()
+        .isEqual(range)
+    ) {
+      return startLink
+    } else {
+      return null
+    }
+  }
+}

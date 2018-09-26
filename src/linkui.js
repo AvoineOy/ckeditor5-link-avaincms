@@ -1,7 +1,7 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin'
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver'
 import Range from '@ckeditor/ckeditor5-engine/src/view/range'
-import {isLinkElement, upcast} from './utils'
+import {isLinkElement, upcast, showUI} from './utils'
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 
@@ -31,7 +31,7 @@ export default class LinkUI extends Plugin {
       cancel()
 
       if (linkCommand.isEnabled) {
-        this._showUI()
+        showUI(editor)
       }
     })
 
@@ -48,81 +48,9 @@ export default class LinkUI extends Plugin {
       button.bind('isEnabled').to(linkCommand, 'isEnabled')
 
       // Show the panel on button click.
-      this.listenTo(button, 'execute', () => this._showUI())
+      this.listenTo(button, 'execute', () => showUI(editor))
 
       return button
     })
   }
-
-  _showUI() {
-    const editor = this.editor
-
-    if (!editor.commands.get('link')) {
-      return
-    }
-
-    let currValue = {href: ''}
-    const selected = this._getSelectedLinkElement()
-    if (selected) {
-      currValue = upcast(selected)
-    }
-
-    const updateCallback = newValue => {
-      if (newValue.href) {
-        editor.execute('link', newValue)
-      } else {
-        editor.execute('unlink')
-      }
-    }
-    editor.openLinkModal(currValue, updateCallback)
-  }
-
-  /**
-   * Returns the link {@link module:engine/view/attributeelement~AttributeElement} under
-   * the {@link module:engine/view/document~Document editing view's} selection or `null`
-   * if there is none.
-   *
-   * **Note**: For a non–collapsed selection the link element is only returned when **fully**
-   * selected and the **only** element within the selection boundaries.
-   *
-   * @private
-   * @returns {module:engine/view/attributeelement~AttributeElement|null}
-   */
-  _getSelectedLinkElement() {
-    const selection = this.editor.editing.view.document.selection
-
-    if (selection.isCollapsed) {
-      return findLinkElementAncestor(selection.getFirstPosition())
-    } else {
-      // The range for fully selected link is usually anchored in adjacent text nodes.
-      // Trim it to get closer to the actual link element.
-      const range = selection.getFirstRange().getTrimmed()
-      const startLink = findLinkElementAncestor(range.start)
-      const endLink = findLinkElementAncestor(range.end)
-
-      if (!startLink || startLink != endLink) {
-        return null
-      }
-
-      // Check if the link element is fully selected.
-      if (
-        Range.createIn(startLink)
-          .getTrimmed()
-          .isEqual(range)
-      ) {
-        return startLink
-      } else {
-        return null
-      }
-    }
-  }
-}
-
-// Returns a link element if there's one among the ancestors of the provided `Position`.
-//
-// @private
-// @param {module:engine/view/position~Position} View position to analyze.
-// @returns {module:engine/view/attributeelement~AttributeElement|null} Link element at the position or null.
-function findLinkElementAncestor(position) {
-  return position.getAncestors().find(ancestor => isLinkElement(ancestor))
 }

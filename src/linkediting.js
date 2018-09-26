@@ -12,6 +12,7 @@ import {downcastAttributeToElement} from '@ckeditor/ckeditor5-engine/src/convers
 import {upcastElementToAttribute} from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters'
 import LinkCommand from './linkcommand'
 import UnlinkCommand from './unlinkcommand'
+import ClickLinkCommand from './clicklinkcommand'
 import {createLinkElement, ensureSafeUrl, upcast} from './utils'
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute'
 import findLinkRange from './findlinkrange'
@@ -65,6 +66,7 @@ export default class LinkEditing extends Plugin {
     // Create linking commands.
     editor.commands.add('link', new LinkCommand(editor))
     editor.commands.add('unlink', new UnlinkCommand(editor))
+    editor.commands.add('clicklink', new ClickLinkCommand(editor))
 
     // Enable two-step caret movement for `richLink` attribute.
     bindTwoStepCaretToAttribute(editor.editing.view, editor.model, this, 'richLink')
