@@ -34,15 +34,15 @@ export default class LinkEditing extends Plugin {
     const editor = this.editor
 
     // Allow link attribute on all inline nodes.
-    editor.model.schema.extend('$text', {allowAttributes: 'linkHref'})
+    editor.model.schema.extend('$text', {allowAttributes: 'richLink'})
 
-    editor.conversion.for('dataDowncast').add(downcastAttributeToElement({model: 'linkHref', view: createLinkElement}))
+    editor.conversion.for('dataDowncast').add(downcastAttributeToElement({model: 'richLink', view: createLinkElement}))
 
     editor.conversion.for('editingDowncast').add(
       downcastAttributeToElement({
-        model: 'linkHref',
-        view: (href, writer) => {
-          return createLinkElement(ensureSafeUrl(href), writer)
+        model: 'richLink',
+        view: (link, writer) => {
+          return createLinkElement(link, writer)
         },
       })
     )
@@ -56,8 +56,10 @@ export default class LinkEditing extends Plugin {
           },
         },
         model: {
-          key: 'linkHref',
-          value: viewElement => viewElement.getAttribute('href'),
+          key: 'richLink',
+          value: viewElement => ({
+            href: viewElement.getAttribute('href'),
+          }),
         },
       })
     )
@@ -66,8 +68,8 @@ export default class LinkEditing extends Plugin {
     editor.commands.add('link', new LinkCommand(editor))
     editor.commands.add('unlink', new UnlinkCommand(editor))
 
-    // Enable two-step caret movement for `linkHref` attribute.
-    bindTwoStepCaretToAttribute(editor.editing.view, editor.model, this, 'linkHref')
+    // Enable two-step caret movement for `richLink` attribute.
+    bindTwoStepCaretToAttribute(editor.editing.view, editor.model, this, 'richLink')
 
     // Setup highlight over selected link.
     this._setupLinkHighlight()
@@ -96,8 +98,8 @@ export default class LinkEditing extends Plugin {
     view.document.registerPostFixer(writer => {
       const selection = editor.model.document.selection
 
-      if (selection.hasAttribute('linkHref')) {
-        const modelRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('linkHref'))
+      if (selection.hasAttribute('richLink')) {
+        const modelRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'))
         const viewRange = editor.editing.mapper.toViewRange(modelRange)
 
         // There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is

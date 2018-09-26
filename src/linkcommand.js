@@ -33,8 +33,8 @@ export default class LinkCommand extends Command {
     const model = this.editor.model
     const doc = model.document
 
-    this.value = doc.selection.getAttribute('linkHref')
-    this.isEnabled = model.schema.checkAttributeInSelection(doc.selection, 'linkHref')
+    this.value = doc.selection.getAttribute('richLink')
+    this.isEnabled = model.schema.checkAttributeInSelection(doc.selection, 'richLink')
   }
 
   /**
@@ -53,22 +53,27 @@ export default class LinkCommand extends Command {
    * @fires execute
    * @param {String} href Link destination.
    */
-  execute(href) {
+  execute(richLink) {
     const model = this.editor.model
     const selection = model.document.selection
 
     model.change(writer => {
-      console.warn('link!', {writer, href, model, selection})
+      console.warn('richLink!', {writer, richLink, model, selection})
       // If selection is collapsed then update selected link or insert new one at the place of caret.
       if (selection.isCollapsed) {
         const position = selection.getFirstPosition()
 
-        // When selection is inside text with `linkHref` attribute.
-        if (selection.hasAttribute('linkHref')) {
-          // Then update `linkHref` value.
-          const linkRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('linkHref'))
+        // When selection is inside text with `richLink` attribute.
+        if (selection.hasAttribute('richLink')) {
+          // Then update `richLink` value.
+          const linkRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'))
           console.warn('link2!', {linkRange})
-          writer.setAttribute('linkHref', href, linkRange)
+          writer.setAttribute('richLink', richLink, linkRange)
+          if (attrs.openInNewWindow) {
+            writer.setAttribute('linkOpenInNewWindow', true, linkRange)
+          } else {
+            writer.removeAttribute('linkOpenInNewWindow')
+          }
 
           // Create new range wrapping changed link.
           writer.setSelection(linkRange)
@@ -76,12 +81,12 @@ export default class LinkCommand extends Command {
         // If not then insert text node with `linkHref` attribute in place of caret.
         // However, since selection in collapsed, attribute value will be used as data for text node.
         // So, if `href` is empty, do not create text node.
-        else if (href !== '') {
+        else if (richLink !== '') {
           const attributes = toMap(selection.getAttributes())
 
-          attributes.set('linkHref', href)
+          attributes.set('richLink', richLink)
 
-          const node = writer.createText(href, attributes)
+          const node = writer.createText(richLink.href, attributes)
 
           writer.insert(node, position)
 
@@ -90,11 +95,11 @@ export default class LinkCommand extends Command {
         }
       } else {
         // If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
-        // omitting nodes where `linkHref` attribute is disallowed.
-        const ranges = model.schema.getValidRanges(selection.getRanges(), 'linkHref')
+        // omitting nodes where `richLink` attribute is disallowed.
+        const ranges = model.schema.getValidRanges(selection.getRanges(), 'richLink')
 
         for (const range of ranges) {
-          writer.setAttribute('linkHref', href, range)
+          writer.setAttribute('richLink', richLink, range)
         }
       }
     })

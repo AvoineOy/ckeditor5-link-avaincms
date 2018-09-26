@@ -9,6 +9,7 @@
 
 import Range from '@ckeditor/ckeditor5-engine/src/model/range'
 import Position from '@ckeditor/ckeditor5-engine/src/model/position'
+import canonicalJson from 'canonical-json'
 
 /**
  * Returns a range containing the entire link in which the given `position` is placed.
@@ -38,7 +39,8 @@ function _findBound(position, value, lookBack) {
 
   let lastNode = null
 
-  while (node && node.getAttribute('linkHref') == value) {
+  const old = canonicalJson(value)
+  while (node && canonicalJson(node.getAttribute('richLink')) == old) {
     lastNode = node
     node = lookBack ? node.previousSibling : node.nextSibling
   }

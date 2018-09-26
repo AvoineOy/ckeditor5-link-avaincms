@@ -71,7 +71,7 @@ export default class LinkUI extends Plugin {
       if (currValue.href) {
         editor.execute('unlink')
       } else {
-        editor.execute('link', newValue.href)
+        editor.execute('link', newValue)
       }
     }
     window.openLinkModal(currValue, update)

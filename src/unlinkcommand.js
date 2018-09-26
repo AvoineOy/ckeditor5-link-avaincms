@@ -20,7 +20,7 @@ export default class UnlinkCommand extends Command {
    * @inheritDoc
    */
   refresh() {
-    this.isEnabled = this.editor.model.document.selection.hasAttribute('linkHref')
+    this.isEnabled = this.editor.model.document.selection.hasAttribute('richLink')
   }
 
   /**
@@ -39,13 +39,13 @@ export default class UnlinkCommand extends Command {
       console.warn('unlink!', {writer, model, selection})
       // Get ranges to unlink.
       const rangesToUnlink = selection.isCollapsed
-        ? [findLinkRange(selection.getFirstPosition(), selection.getAttribute('linkHref'))]
+        ? [findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'))]
         : selection.getRanges()
 
-      // Remove `linkHref` attribute from specified ranges.
+      // Remove `richLink` attribute from specified ranges.
       for (const range of rangesToUnlink) {
         console.warn({range})
-        writer.removeAttribute('linkHref', range)
+        writer.removeAttribute('richLink', range)
       }
     })
   }
