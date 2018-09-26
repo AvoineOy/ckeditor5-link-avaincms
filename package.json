@@ -45,13 +45,7 @@
     "theme"
   ],
   "scripts": {
-    "lint": "eslint --quiet '**/*.js'",
-    "precommit": "lint-staged"
-  },
-  "lint-staged": {
-    "**/*.js": [
-      "eslint --quiet"
-    ]
+    "lint": "eslint --quiet '**/*.js'"
   },
   "eslintIgnore": [
     "src/lib/**",

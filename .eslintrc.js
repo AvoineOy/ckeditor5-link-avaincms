@@ -5,8 +5,14 @@
 
 /* eslint-env node */
 
-'use strict';
+'use strict'
 
 module.exports = {
-	extends: 'ckeditor5'
-};
+  parserOptions: {
+    ecmaVersion: 7,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+}
