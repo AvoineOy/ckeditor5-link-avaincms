@@ -58,6 +58,7 @@ export default class LinkCommand extends Command {
 		const selection = model.document.selection;
 
 		model.change( writer => {
+			console.warn( 'link!', { writer, href, model, selection } );
 			// If selection is collapsed then update selected link or insert new one at the place of caret.
 			if ( selection.isCollapsed ) {
 				const position = selection.getFirstPosition();
@@ -66,7 +67,7 @@ export default class LinkCommand extends Command {
 				if ( selection.hasAttribute( 'linkHref' ) ) {
 					// Then update `linkHref` value.
 					const linkRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) );
-
+					console.warn( 'link2!', { linkRange } );
 					writer.setAttribute( 'linkHref', href, linkRange );
 
 					// Create new range wrapping changed link.

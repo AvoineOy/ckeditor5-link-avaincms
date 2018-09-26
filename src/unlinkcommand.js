@@ -36,12 +36,14 @@ export default class UnlinkCommand extends Command {
 		const selection = model.document.selection;
 
 		model.change( writer => {
-			// Get ranges to unlink.
+			console.warn( 'unlink!', { writer, model, selection } );
+ 			// Get ranges to unlink.
 			const rangesToUnlink = selection.isCollapsed ?
 				[ findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'linkHref' ) ) ] : selection.getRanges();
 
 			// Remove `linkHref` attribute from specified ranges.
 			for ( const range of rangesToUnlink ) {
+				console.warn( { range } );
 				writer.removeAttribute( 'linkHref', range );
 			}
 		} );
