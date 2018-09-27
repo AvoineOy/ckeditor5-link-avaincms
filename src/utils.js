@@ -7,6 +7,7 @@
  * @module link/utils
  */
 
+import Range from '@ckeditor/ckeditor5-engine/src/model/range'
 const linkElementSymbol = Symbol('linkElement')
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g // eslint-disable-line no-control-regex
@@ -84,7 +85,7 @@ export function showUI(editor) {
   }
 
   let currValue = {href: ''}
-  const selected = _getSelectedLinkElement(editor)
+  const selected = getSelectedLinkElement(editor)
   if (selected) {
     currValue = upcast(selected)
   }
@@ -99,7 +100,7 @@ export function showUI(editor) {
   editor.openLinkModal(currValue, updateCallback)
 }
 
-function _getSelectedLinkElement(editor) {
+export function getSelectedLinkElement(editor) {
   function findLinkElementAncestor(position) {
     return position.getAncestors().find(ancestor => isLinkElement(ancestor))
   }

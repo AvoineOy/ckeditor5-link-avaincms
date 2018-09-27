@@ -8,6 +8,10 @@
 'use strict'
 
 module.exports = {
+  env: {
+    browser: true,
+    es6: true,
+  },
   parserOptions: {
     ecmaVersion: 7,
     sourceType: 'module',
@@ -15,4 +19,5 @@ module.exports = {
       jsx: true,
     },
   },
+  extends: 'eslint:recommended',
 }

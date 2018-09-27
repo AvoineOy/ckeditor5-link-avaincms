@@ -13,7 +13,7 @@ import {upcastElementToAttribute} from '@ckeditor/ckeditor5-engine/src/conversio
 import LinkCommand from './linkcommand'
 import UnlinkCommand from './unlinkcommand'
 import ClickLinkCommand from './clicklinkcommand'
-import {createLinkElement, ensureSafeUrl, upcast} from './utils'
+import {createLinkElement, upcast} from './utils'
 import bindTwoStepCaretToAttribute from '@ckeditor/ckeditor5-engine/src/utils/bindtwostepcarettoattribute'
 import findLinkRange from './findlinkrange'
 import '../theme/link.css'

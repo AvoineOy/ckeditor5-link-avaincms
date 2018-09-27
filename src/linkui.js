@@ -1,7 +1,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin'
 import ClickObserver from '@ckeditor/ckeditor5-engine/src/view/observer/clickobserver'
-import Range from '@ckeditor/ckeditor5-engine/src/view/range'
-import {isLinkElement, upcast, showUI} from './utils'
+import {showUI, getSelectedLinkElement} from './utils'
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview'
 
@@ -20,11 +19,11 @@ export default class LinkUI extends Plugin {
     this._createToolbarLinkButton()
   }
 
-  _showUIifSelection() {
-    if (editor.model.document.selection.isCollapsed) {
-      alert(this.editor.t('Please select some text first.'))
-    } else {
+  _showUIifSelectionOrLink() {
+    if (getSelectedLinkElement(this.editor)) {
       showUI(this.editor)
+    } else {
+      alert(this.editor.t('Please select some text first.'))
     }
   }
 
@@ -39,7 +38,7 @@ export default class LinkUI extends Plugin {
       cancel()
 
       if (linkCommand.isEnabled) {
-        this._showUIifSelection()
+        this._showUIifSelectionOrLink()
       }
     })
 
@@ -56,7 +55,7 @@ export default class LinkUI extends Plugin {
       button.bind('isEnabled').to(linkCommand, 'isEnabled')
 
       // Show the panel on button click.
-      this.listenTo(button, 'execute', () => this._showUIifSelection())
+      this.listenTo(button, 'execute', () => this._showUIifSelectionOrLink())
 
       return button
     })
