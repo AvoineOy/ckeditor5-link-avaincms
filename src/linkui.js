@@ -20,6 +20,14 @@ export default class LinkUI extends Plugin {
     this._createToolbarLinkButton()
   }
 
+  _showUIifSelection() {
+    if (editor.model.document.selection.isCollapsed) {
+      alert(this.editor.t('Please select some text first.'))
+    } else {
+      showUI(this.editor)
+    }
+  }
+
   _createToolbarLinkButton() {
     const editor = this.editor
     const linkCommand = editor.commands.get('link')
@@ -31,7 +39,7 @@ export default class LinkUI extends Plugin {
       cancel()
 
       if (linkCommand.isEnabled) {
-        showUI(editor)
+        this._showUIifSelection()
       }
     })
 
@@ -48,7 +56,7 @@ export default class LinkUI extends Plugin {
       button.bind('isEnabled').to(linkCommand, 'isEnabled')
 
       // Show the panel on button click.
-      this.listenTo(button, 'execute', () => showUI(editor))
+      this.listenTo(button, 'execute', () => this._showUIifSelection())
 
       return button
     })

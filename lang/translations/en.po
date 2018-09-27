@@ -28,3 +28,7 @@ msgstr "Open link in new tab"
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
 msgstr "This link has no URL"
+
+msgctxt "Alert telling that in order to use the URL button, one must first make a text selection."
+msgid "Please select some text first."
+msgstr "Please select some text first."

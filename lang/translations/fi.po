@@ -28,3 +28,7 @@ msgstr ""
 msgctxt "Label explaining that a link has no URL set (the URL is empty)."
 msgid "This link has no URL"
 msgstr ""
+
+msgctxt "Alert telling that in order to use the URL button, one must first make a text selection."
+msgid "Please select some text first."
+msgstr "Valitse ensin teksti, josta haluat tehdä linkin."
