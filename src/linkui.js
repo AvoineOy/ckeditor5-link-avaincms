@@ -20,7 +20,7 @@ export default class LinkUI extends Plugin {
   }
 
   _showUIifSelectionOrLink() {
-    if (getSelectedLinkElement(this.editor)) {
+    if (!this.editor.model.document.selection.isCollapsed || getSelectedLinkElement(this.editor)) {
       showUI(this.editor)
     } else {
       alert(this.editor.t('Please select some text first.'))
