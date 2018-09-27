@@ -20,7 +20,16 @@ export default class LinkUI extends Plugin {
   }
 
   _showUIifSelectionOrLink() {
-    if (!this.editor.model.document.selection.isCollapsed || getSelectedLinkElement(this.editor)) {
+    const selection = this.editor.model.document.selection
+
+    // if some text is selected inside a link, unselect it first
+    // NB: this doesn't actually work for some reason.
+    if (getSelectedLinkElement(this.editor) && !selection.isCollapsed) {
+      selection.setTo(new Range(selection.getFirstPosition(), selection.getFirstPosition()))
+    }
+
+    // if we now have either a selection or are positioned inside a link, show the ui.
+    if (!selection.isCollapsed || getSelectedLinkElement(this.editor)) {
       showUI(this.editor)
     } else {
       alert(this.editor.t('Please select some text first.'))

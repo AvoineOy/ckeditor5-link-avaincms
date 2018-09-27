@@ -7,7 +7,7 @@
  * @module link/utils
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range'
+import Range from '@ckeditor/ckeditor5-engine/src/view/range'
 const linkElementSymbol = Symbol('linkElement')
 
 const ATTRIBUTE_WHITESPACES = /[\u0000-\u0020\u00A0\u1680\u180E\u2000-\u2029\u205f\u3000]/g // eslint-disable-line no-control-regex
