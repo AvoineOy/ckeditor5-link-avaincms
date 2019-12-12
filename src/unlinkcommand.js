@@ -37,9 +37,8 @@ export default class UnlinkCommand extends Command {
 
 		model.change(writer => {
 			// Get ranges to unlink.
-			const rangesToUnlink = selection.isCollapsed
-				? [findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'))]
-				: selection.getRanges();
+			const rangesToUnlink = selection.isCollapsed ?
+				[ findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'richLink' ), model ) ] : selection.getRanges();
 
 			// Remove `richLink` attribute from specified ranges.
 			for (const range of rangesToUnlink) {

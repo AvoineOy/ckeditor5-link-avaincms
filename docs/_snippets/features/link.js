@@ -24,7 +24,7 @@ ClassicEditor
 				'undo',
 				'redo'
 			],
-			viewportTopOffset: 60
+			viewportTopOffset: window.getViewportTopOffsetConfig()
 		}
 	} )
 	.then( editor => {

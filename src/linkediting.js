@@ -37,21 +37,16 @@ export default class LinkEditing extends Plugin {
 		// Allow link attribute on all inline nodes.
 		editor.model.schema.extend('$text', {allowAttributes: 'richLink'});
 
-		editor.conversion
-			.for('dataDowncast')
-			.add(downcastAttributeToElement({model: 'richLink', view: createLinkElement}));
+		editor.conversion.for( 'dataDowncast' )
+			.attributeToElement( { model: 'richLink', view: createLinkElement } );
 
-		editor.conversion.for('editingDowncast').add(
-			downcastAttributeToElement({
-				model: 'richLink',
-				view: (link, writer) => {
-					return createLinkElement(link, writer);
-				},
-			})
-		);
+		editor.conversion.for( 'editingDowncast' )
+			.attributeToElement( { model: 'richLink', view: ( link, writer ) => {
+				return createLinkElement( link, writer );
+			} } );
 
-		editor.conversion.for('upcast').add(
-			upcastElementToAttribute({
+		editor.conversion.for( 'upcast' )
+			.elementToAttribute( {
 				view: {
 					name: 'a',
 					attributes: {
@@ -60,10 +55,9 @@ export default class LinkEditing extends Plugin {
 				},
 				model: {
 					key: 'richLink',
-					value: upcast,
-				},
-			})
-		);
+					value: viewElement => viewElement.getAttribute( 'href' )
+				}
+			} );
 
 		// Create linking commands.
 		editor.commands.add('link', new LinkCommand(editor));
@@ -100,9 +94,9 @@ export default class LinkEditing extends Plugin {
 		view.document.registerPostFixer(writer => {
 			const selection = editor.model.document.selection;
 
-			if (selection.hasAttribute('richLink')) {
-				const modelRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'));
-				const viewRange = editor.editing.mapper.toViewRange(modelRange);
+			if ( selection.hasAttribute( 'richLink' ) ) {
+				const modelRange = findLinkRange( selection.getFirstPosition(), selection.getAttribute( 'richLink' ), editor.model );
+				const viewRange = editor.editing.mapper.toViewRange( modelRange );
 
 				// There might be multiple `a` elements in the `viewRange`, for example, when the `a` element is
 				// broken by a UIElement.

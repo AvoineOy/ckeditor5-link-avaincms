@@ -8,7 +8,6 @@
  */
 
 import Command from '@ckeditor/ckeditor5-core/src/command';
-import Range from '@ckeditor/ckeditor5-engine/src/model/range';
 import findLinkRange from './findlinkrange';
 import toMap from '@ckeditor/ckeditor5-utils/src/tomap';
 
@@ -65,7 +64,7 @@ export default class LinkCommand extends Command {
 				// When selection is inside text with `richLink` attribute.
 				if (selection.hasAttribute('richLink')) {
 					// Then update `richLink` value.
-					const linkRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'));
+					const linkRange = findLinkRange(selection.getFirstPosition(), selection.getAttribute('richLink'), model);
 					writer.setAttribute('richLink', richLink, linkRange);
 					if (richLink.openInNewWindow) {
 						writer.setAttribute('linkOpenInNewWindow', true, linkRange);
@@ -89,7 +88,7 @@ export default class LinkCommand extends Command {
 					writer.insert(node, position);
 
 					// Create new range wrapping created node.
-					writer.setSelection(Range.createOn(node));
+					writer.setSelection( writer.createRangeOn( node ) );
 				}
 			} else {
 				// If selection has non-collapsed ranges, we change attribute on nodes inside those ranges
