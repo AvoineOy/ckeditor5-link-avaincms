@@ -7,9 +7,9 @@
  * @module link/findlinkrange
  */
 
-import Range from '@ckeditor/ckeditor5-engine/src/model/range'
-import Position from '@ckeditor/ckeditor5-engine/src/model/position'
-import canonicalJson from 'canonical-json'
+import Range from '@ckeditor/ckeditor5-engine/src/model/range';
+import Position from '@ckeditor/ckeditor5-engine/src/model/position';
+import canonicalJson from 'canonical-json';
 
 /**
  * Returns a range containing the entire link in which the given `position` is placed.
@@ -22,7 +22,7 @@ import canonicalJson from 'canonical-json'
  * @returns {module:engine/model/range~Range} The link range.
  */
 export default function findLinkRange(position, value) {
-  return new Range(_findBound(position, value, true), _findBound(position, value, false))
+	return new Range(_findBound(position, value, true), _findBound(position, value, false));
 }
 
 // Walks forward or backward (depends on the `lookBack` flag), node by node, as long as they have the same `linkHref` attribute value
@@ -33,17 +33,17 @@ export default function findLinkRange(position, value) {
 // @param {Boolean} lookBack Whether the walk direction is forward (`false`) or backward (`true`).
 // @returns {module:engine/model/position~Position} The position just before the last matched node.
 function _findBound(position, value, lookBack) {
-  // Get node before or after position (depends on `lookBack` flag).
-  // When position is inside text node then start searching from text node.
-  let node = position.textNode || (lookBack ? position.nodeBefore : position.nodeAfter)
+	// Get node before or after position (depends on `lookBack` flag).
+	// When position is inside text node then start searching from text node.
+	let node = position.textNode || (lookBack ? position.nodeBefore : position.nodeAfter);
 
-  let lastNode = null
+	let lastNode = null;
 
-  const old = canonicalJson(value)
-  while (node && canonicalJson(node.getAttribute('richLink')) == old) {
-    lastNode = node
-    node = lookBack ? node.previousSibling : node.nextSibling
-  }
+	const old = canonicalJson(value);
+	while (node && canonicalJson(node.getAttribute('richLink')) == old) {
+		lastNode = node;
+		node = lookBack ? node.previousSibling : node.nextSibling;
+	}
 
-  return lastNode ? Position.createAt(lastNode, lookBack ? 'before' : 'after') : position
+	return lastNode ? Position.createAt(lastNode, lookBack ? 'before' : 'after') : position;
 }
