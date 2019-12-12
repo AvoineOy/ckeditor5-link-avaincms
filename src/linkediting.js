@@ -8,8 +8,6 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import {downcastAttributeToElement} from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import {upcastElementToAttribute} from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ClickLinkCommand from './clicklinkcommand';
@@ -55,7 +53,7 @@ export default class LinkEditing extends Plugin {
 				},
 				model: {
 					key: 'richLink',
-					value: viewElement => viewElement.getAttribute( 'href' )
+					value: upcast
 				}
 			} );
 
