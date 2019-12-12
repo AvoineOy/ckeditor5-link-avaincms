@@ -8,6 +8,8 @@
  */
 
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import { downcastAttributeToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 import LinkCommand from './linkcommand';
 import UnlinkCommand from './unlinkcommand';
 import ClickLinkCommand from './clicklinkcommand';
@@ -36,15 +38,16 @@ export default class LinkEditing extends Plugin {
 		editor.model.schema.extend('$text', {allowAttributes: 'richLink'});
 
 		editor.conversion.for( 'dataDowncast' )
-			.attributeToElement( { model: 'richLink', view: createLinkElement } );
+			.add( downcastAttributeToElement( { model: 'richLink', view: createLinkElement } ) );
+			// .attributeToElement( { model: 'richLink', view: createLinkElement } );
 
 		editor.conversion.for( 'editingDowncast' )
-			.attributeToElement( { model: 'richLink', view: ( link, writer ) => {
+			.add( downcastAttributeToElement( { model: 'richLink', view: ( link, writer ) => {
 				return createLinkElement( link, writer );
-			} } );
+			} } ) );
 
 		editor.conversion.for( 'upcast' )
-			.elementToAttribute( {
+			.add( upcastElementToAttribute( {
 				view: {
 					name: 'a',
 					attributes: {
@@ -55,7 +58,7 @@ export default class LinkEditing extends Plugin {
 					key: 'richLink',
 					value: upcast
 				}
-			} );
+			} ) );
 
 		// Create linking commands.
 		editor.commands.add('link', new LinkCommand(editor));
